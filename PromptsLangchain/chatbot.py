@@ -1,5 +1,6 @@
 from langchain_huggingface import ChatHuggingFace,HuggingFaceEndpoint
 from dotenv import load_dotenv
+from langchain_core.messages import SystemMessage,AIMessage,HumanMessage
 load_dotenv()
 
 
@@ -47,15 +48,29 @@ endpoint = HuggingFaceEndpoint(
 
 model = ChatHuggingFace(llm = endpoint)
 
-chat_history = []
+chat_history = [
+    SystemMessage(content='you are a helpful Ai Assistant')
+]
 
 while True:
     user_input = input("you: ")
-    chat_history.append(user_input)
+    chat_history.append(HumanMessage(content=user_input))
     if user_input == 'exit':
         break
     result = model.invoke(chat_history)
-    chat_history.append(result.content)
+    chat_history.append(AIMessage(content=result.content))
     print("AI: ",result.content)
     
 print(chat_history)
+# now the problem is that we have messages
+# stored in a  single location but the info 
+# about who sends which message is not present
+# so its recommended to keep track of
+# who sends which message by maintaing a 
+# dictionary
+
+# we use langchain messages for this
+# these are a type of static messages
+# human message
+# system message
+# AI message
