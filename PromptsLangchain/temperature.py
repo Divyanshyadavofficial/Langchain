@@ -6,6 +6,3 @@ load_dotenv()
 model = ChatOpenAI(model="gpt-4",temperature=0,max_completion_tokens=10)
 result = model.invoke("Write  a five line poem on cricket")
 print(result.content)
-# if temp was zero output will be same
-# if we increase the value of temp there is a 
-# change in output (1.5)
