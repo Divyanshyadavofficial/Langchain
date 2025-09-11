@@ -1,0 +1,31 @@
+from langchain_huggingface import ChatHuggingFace, HuggingFaceEndpoint
+from dotenv import load_dotenv
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+
+load_dotenv()
+
+llm = HuggingFaceEndpoint(
+    repo_id="google/gemma-2-2b-it",
+    task= "text-generation"
+)
+
+model = ChatHuggingFace(llm = llm)
+parser = JsonOutputParser()
+template = PromptTemplate(
+    template="give me the name, age,city of a fictional person \n {format_instruction}",
+    input_variables=[],
+    partial_variables={'format_instruction':parser.get_format_instructions()}
+)
+chain = template | model | parser
+result = chain.invoke({})
+
+print(result)
+
+# why parital variable because it is filled before run time
+# in jsonOutput parser we are not able to define the 
+# structure of the output that we are getting
+# it is decided by the parser
+# it is the biggest flaw of json output parser that it cannot enforce a schema.
+
+# to enforce a schema we need to use structured output parser
